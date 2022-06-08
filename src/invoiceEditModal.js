@@ -1,14 +1,15 @@
 import {useState} from "react";
-import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
+import { Modal, Button, InputGroup, FormControl, CloseButton } from "react-bootstrap";
 
 function InvoiceEditModal (props) {
 
     const [hideModal, handleHide] = useState(false);
 
     return(
-        <Modal show={props.show} onClick={props.toggle}>
-            <Modal.Header closeButton>
+        <Modal show={props.show} >
+            <Modal.Header closeButton onHide={props.toggle}>
                 <Modal.Title>Edit Invoice</Modal.Title>
+
             </Modal.Header>
             <Modal.Body>
                 <InputGroup className="mb-3">
