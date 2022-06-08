@@ -5,7 +5,7 @@ import Table from "./Table";
 function TableRow (props) {
 
     return (
-        <tr id={props.key}>
+        <tr id={props.uniqueKey}>
             <td>{props.firstColumn}</td>
             <td>{props.secondColumn}</td>
         </tr>

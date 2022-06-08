@@ -30,13 +30,7 @@ function App() {
             if(!jsonData)
                 setJsonData(myJson)
         });
-
   }
-
-  // useEffect(()=>{
-  //     debugger;
-  //   jsonData = test()
-  // },[])
 
 
     let check = null

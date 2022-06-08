@@ -8,26 +8,30 @@ function Table(props) {
     const logoStyle = {width: '200px'}
 
     const [showModal, setShow] = useState(false);
+    const [invoiceRowId, setInvoiceRowId] = useState(0);
+    const [lineArray, setLineArray] = useState([]);
 
     const toggleModal = () => {
         setShow(!showModal)
     }
 
-    console.log(props)
-
     // debugger;
+
+
 
     if(props.tableData.loading === true)
     {
-        console.log(props)
         return (<p>Loading....</p>)
     }
     else {
-        // return( <p>Data Loaded</p> )
-        console.log(props.tableData.lineItems[0])
-
         const lineArray = props.tableData.lineItems
+
+        // setLineArray(props.tableData.lineItems)
         console.log(lineArray)
+
+        // const setParentState = (rowId, desc, price) => {
+        //     setLineArray(lineArray[rowId])
+        // }
 
         const invoiceHeader =
             <>
@@ -60,21 +64,18 @@ function Table(props) {
 
         const total = () => {
             let prevTotal = 0
-
             lineArray.forEach( (value) => {
                 prevTotal = prevTotal + value.price
                 console.log(prevTotal)
             })
-
             return prevTotal
         }
-
-
 
         function testButton(e) {
             e.preventDefault();
             setShow(true)
-            console.log(e.target.previousElementSibling.id);
+            setInvoiceRowId(e.target.previousElementSibling.id)
+            console.log(invoiceRowId);
         }
 
         return (
@@ -106,7 +107,7 @@ function Table(props) {
 
                     {lineArray.map(function (value, index) {
                         return <>
-                            <TableRow key={index} firstColumn ={value.description} secondColumn = {value.price}/>
+                            <TableRow uniqueKey={index} firstColumn ={value.description} secondColumn = {value.price}/>
                             <Button variant="light" onClick={testButton}>Edit</Button>
                         </>
                     })}
@@ -114,7 +115,8 @@ function Table(props) {
                     <TableRow className= "total"  firstColumn = "Total:" secondColumn = {total()} />
                     <TableRow className= "vat"  firstColumn = "VAT (19%):" secondColumn = {(total() * .19) + ' EUR'}  />
 
-                    <InvoiceEditModal show={showModal} toggle={toggleModal} />
+
+                    <InvoiceEditModal show={showModal} toggle={toggleModal}  invoiceRowId={invoiceRowId} invoicesArray={lineArray} />
 
                     </tbody>
                 </table>

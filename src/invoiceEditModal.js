@@ -4,24 +4,19 @@ import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
 function InvoiceEditModal (props) {
 
     const [hideModal, handleHide] = useState(false);
-    //
-    //
-    // const hideInvoiceModal = () => handleHide(true);
-
-    console.log(props.show)
 
     return(
-        <Modal show={props.show} >
+        <Modal show={props.show} onClick={props.toggle}>
             <Modal.Header closeButton>
                 <Modal.Title>Edit Invoice</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <InputGroup className="mb-3">
                     <FormControl id="desc"
-                        placeholder="Description"
+                        placeholder= {props.invoicesArray[props.invoiceRowId].description}
                     />
                     <FormControl id = "val"
-                        placeholder="value"
+                        placeholder= {props.invoicesArray[props.invoiceRowId].price}
                     />
                 </InputGroup>
             </Modal.Body>
