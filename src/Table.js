@@ -9,13 +9,12 @@ function Table(props) {
 
     const [showModal, setShow] = useState(false);
     const [invoiceRowId, setInvoiceRowId] = useState(0);
-    const [lineArray, setLineArray] = useState([]);
+
+    const [invoiceData, setInvoiceData] = useState({lineItems: []});
 
     const toggleModal = () => {
         setShow(!showModal)
     }
-
-    // debugger;
 
 
 
@@ -24,14 +23,26 @@ function Table(props) {
         return (<p>Loading....</p>)
     }
     else {
-        const lineArray = props.tableData.lineItems
 
-        // setLineArray(props.tableData.lineItems)
-        console.log(lineArray)
+        if(invoiceData?.lineItems?.length === 0 ){
+            const tempObject = {lineItems: props.tableData.lineItems}
+            setInvoiceData(tempObject)
+            console.log(invoiceData)
+            return invoiceData
+        }
 
-        // const setParentState = (rowId, desc, price) => {
-        //     setLineArray(lineArray[rowId])
-        // }
+        const test = (value1, value2) => {
+            console.log(value1)
+            console.log(value2)
+
+            let tempArray = invoiceData.lineItems
+            tempArray[invoiceRowId].description = value1
+            tempArray[invoiceRowId].price = value2
+
+            setInvoiceData({lineItems: tempArray})
+            console.log(invoiceData)
+        }
+
 
         const invoiceHeader =
             <>
@@ -62,24 +73,34 @@ function Table(props) {
             />
 
 
+        // const total = () => {
+        //     let prevTotal = 0
+        //     lineArray.forEach( (value) => {
+        //         prevTotal = prevTotal + value.price
+        //         console.log(prevTotal)
+        //     })
+        //     return prevTotal
+        // }
+
         const total = () => {
-            let prevTotal = 0
-            lineArray.forEach( (value) => {
-                prevTotal = prevTotal + value.price
-                console.log(prevTotal)
+            let invoiceTotal = 0
+            invoiceData.lineItems.forEach( (value) => {
+                invoiceTotal = invoiceTotal + value.price
+                console.log(invoiceTotal)
             })
-            return prevTotal
+            return invoiceTotal.toFixed(2)
         }
 
         function testButton(e) {
             e.preventDefault();
             setShow(true)
-            setInvoiceRowId(e.target.previousElementSibling.id)
-            console.log(invoiceRowId);
+            setInvoiceRowId(parseInt(e.target.previousElementSibling.id))
+            // console.log(invoiceRowId);
         }
 
         return (
             <>
+
                 <table cellPadding="0" cellSpacing="0">
                     <tbody>
 
@@ -105,7 +126,7 @@ function Table(props) {
 
                     <TableRow className= "heading"  firstColumn = "Item" secondColumn = "Price"  />
 
-                    {lineArray.map(function (value, index) {
+                    {invoiceData.lineItems.map(function (value, index) {
                         return <>
                             <TableRow uniqueKey={index} firstColumn ={value.description} secondColumn = {value.price}/>
                             <Button variant="light" onClick={testButton}>Edit</Button>
@@ -113,11 +134,9 @@ function Table(props) {
                     })}
 
                     <TableRow className= "total"  firstColumn = "Total:" secondColumn = {total()} />
-                    <TableRow className= "vat"  firstColumn = "VAT (19%):" secondColumn = {(total() * .19) + ' EUR'}  />
+                    <TableRow className= "vat"  firstColumn = "VAT (19%):" secondColumn = {(total() * .19).toFixed(2) + ' EUR'}  />
 
-
-                    <InvoiceEditModal show={showModal} toggle={toggleModal}  invoiceRowId={invoiceRowId} invoicesArray={lineArray} />
-
+                    <InvoiceEditModal show={showModal} toggle={toggleModal}  invoiceRowId={invoiceRowId} invoicesArray={invoiceData.lineItems} onTextboxValueChanged={test}/>
                     </tbody>
                 </table>
             </>
