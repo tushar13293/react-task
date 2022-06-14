@@ -1,0 +1,18 @@
+{
+  "id": "1234",
+  "lineItems": [
+    {
+      "description": "Waistcoat ",
+      "price": 211
+    },
+    {
+      "description": "Generating the bus won't do anything",
+      "price": 10.71
+    }
+  ],
+  "email": "austinhackett@durgan.org",
+  "fullName": "Delaney",
+  "company": "Kassulke Group",
+  "createdAt": "2024-10-11",
+  "dueAt": "2024-11-02"
+}

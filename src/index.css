@@ -22,6 +22,7 @@
 }
 
 .invoice-box table tr td:nth-child(2) {
+  /*width: 20px;*/
   text-align: right;
 }
 
@@ -83,3 +84,23 @@
     text-align: center;
   }
 }
+
+.fileUploadZone {
+  padding: 20px 0;
+  margin-left: 200px;
+  text-align: center;
+  width: 300px;
+  border: 1px solid green;
+  align-self: center;
+}
+
+.logoStyle {
+  width: 200px;
+  margin-left: -40px;
+}
+
+.vat td {
+  width:50%
+}
+
+

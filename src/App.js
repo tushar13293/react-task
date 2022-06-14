@@ -1,18 +1,36 @@
 import React, {Component, useState,useEffect} from 'react'
 import   {GetData} from './apiCalls/getData'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Table from './Table';
+import Table from './components/Table';
 import './App.css';
+import {FileUploader} from "react-drag-drop-files";
+import {Button} from "react-bootstrap";
 
 function App() {
 
-  // let jsonData = null
-  // console.log(jsonData)
+    let [jsonData, setJsonData] = useState(null)
+
+    // const [file, setFile] = useState(null)
+    // const fileTypes = ["JSON"];
+    //
+    // const handleChange = (fileparameter) => {
+    //     const fileReader = new FileReader();
+    //     fileReader.readAsText(fileparameter);
+    //     fileReader.onload = e => {
+    //         const temp = JSON.parse(e.target.result)
+    //         setJsonData( temp )
+    //         console.log( jsonData )
+    //     };
+    // };
+
+    // const changeState = () => {
+    //     const temp = {id:1}
+    //     setJsonData( temp )
+    //     console.log(jsonData)
+    // }
 
 
-  let [jsonData, setJsonData] = useState(null)
-
-  const test= () => {
+    const test= () => {
     fetch('./invoice.json'
         ,{
           headers : {
@@ -45,7 +63,9 @@ function App() {
 
   return (
       <>
-        <Table tableData={check}  />
+          {/*<FileUploader handleChange={handleChange} name="file" types={fileTypes} />*/}
+          <Table tableData={check}  />
+          {/*<Button variant="light" onClick={changeState}>Button</Button>*/}
       </>
 
   );

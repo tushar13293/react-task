@@ -1,20 +1,31 @@
-import React, {Component, useState,useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import TableRow from "./TableRow";
 import InvoiceEditModal from "./invoiceEditModal";
 import {Button} from "react-bootstrap";
+import {FileUploader} from "react-drag-drop-files";
 
 function Table(props) {
 
-    const logoStyle = {width: '200px'}
 
     const [showModal, setShow] = useState(false);
     const [invoiceRowId, setInvoiceRowId] = useState(0);
-
-    const [invoiceData, setInvoiceData] = useState({lineItems: []});
+    const [invoiceData, setInvoiceData] = useState({data: {}})
 
     const toggleModal = () => {
         setShow(!showModal)
     }
+
+    const fileTypes = ["JSON"];
+
+    const handleChange = (fileparameter) => {
+        const fileReader = new FileReader();
+        fileReader.readAsText(fileparameter);
+        fileReader.onload = e => {
+            const temp = JSON.parse(e.target.result)
+            setInvoiceData({data: temp} )
+            console.log( invoiceData )
+        };
+    };
 
 
 
@@ -24,31 +35,34 @@ function Table(props) {
     }
     else {
 
-        if(invoiceData?.lineItems?.length === 0 ){
-            const tempObject = {lineItems: props.tableData.lineItems}
-            setInvoiceData(tempObject)
-            console.log(invoiceData)
-            return invoiceData
+        function setStateFunction() {
+            const newState = {data: props.tableData};
+            return newState;
+        }
+
+        if(Object.keys(invoiceData.data).length === 0 ){
+            setInvoiceData( setStateFunction())
         }
 
         const test = (value1, value2) => {
             console.log(value1)
             console.log(value2)
 
-            let tempArray = invoiceData.lineItems
+            let tempArray = invoiceData.data.lineItems
             tempArray[invoiceRowId].description = value1
             tempArray[invoiceRowId].price = value2
 
-            setInvoiceData({lineItems: tempArray})
-            console.log(invoiceData)
+            setInvoiceData(prevState => { // Object.assign would also work
+                return {...prevState, ...tempArray}})
         }
 
+        const testArray = invoiceData?.data?.lineItems
 
         const invoiceHeader =
             <>
-                <span>Invoice: {props.tableData.id} <br />
-                </span> <span>created: {props.tableData.createdAt}</span><br />
-                <span>Due: {props.tableData.dueAt}</span>
+                <span>Invoice: {invoiceData.data.id}</span> <br />
+                <span>created: {invoiceData.data.createdAt}</span><br />
+                <span>Due: {invoiceData.data.dueAt}</span>
             </>
 
         const companyInfo =
@@ -60,49 +74,45 @@ function Table(props) {
 
         const customerInfo =
             <>
-                <span>{props.tableData.company}</span> <br />
+                <span>{invoiceData.data.company}</span> <br />
                 <span>Bob Hans Jens, The Great</span><br />
-                <span>{props.tableData.email}</span>
+                <span>{invoiceData.data.email}</span>
             </>
 
         const logo =
             <img
                 src="cai_logo.svg"
-                style={logoStyle}
+                className="logoStyle"
                 alt="logo"
             />
 
 
-        // const total = () => {
-        //     let prevTotal = 0
-        //     lineArray.forEach( (value) => {
-        //         prevTotal = prevTotal + value.price
-        //         console.log(prevTotal)
-        //     })
-        //     return prevTotal
-        // }
-
         const total = () => {
             let invoiceTotal = 0
-            invoiceData.lineItems.forEach( (value) => {
+            invoiceData?.data?.lineItems?.forEach( (value) => {
                 invoiceTotal = invoiceTotal + value.price
                 console.log(invoiceTotal)
             })
             return invoiceTotal.toFixed(2)
         }
 
-        function testButton(e) {
+        function editButton(e) {
             e.preventDefault();
             setShow(true)
-            setInvoiceRowId(parseInt(e.target.previousElementSibling.id))
-            // console.log(invoiceRowId);
+            setInvoiceRowId(parseInt(e.target.id))
+            console.log(e.target.id)
         }
 
-        return (
-            <>
 
-                <table cellPadding="0" cellSpacing="0">
+
+        return (
+            <div className="invoice-box">
+                <table cellPadding="0" cellSpacing="0" >
                     <tbody>
+
+                    <tr>
+                        <FileUploader children={<p className="fileUploadZone">Drop JSON file here</p>} handleChange={handleChange} name="file" types={fileTypes} />
+                    </tr>
 
                     <tr className="top">
                         <td colSpan="2">
@@ -124,26 +134,33 @@ function Table(props) {
                         </td>
                     </tr>
 
+
+
                     <TableRow className= "heading"  firstColumn = "Item" secondColumn = "Price"  />
 
-                    {invoiceData.lineItems.map(function (value, index) {
-                        return <>
-                            <TableRow uniqueKey={index} firstColumn ={value.description} secondColumn = {value.price}/>
-                            <Button variant="light" onClick={testButton}>Edit</Button>
-                        </>
+
+                    {testArray?.map(function (value, index) {
+                        return <tr>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <TableRow uniqueKey={index} firstColumn ={value.description} secondColumn = {value.price}/>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td><Button id={index} variant="primary" onClick={editButton}>Edit</Button></td>
+                                </tr>
                     })}
 
                     <TableRow className= "total"  firstColumn = "Total:" secondColumn = {total()} />
                     <TableRow className= "vat"  firstColumn = "VAT (19%):" secondColumn = {(total() * .19).toFixed(2) + ' EUR'}  />
 
-                    <InvoiceEditModal show={showModal} toggle={toggleModal}  invoiceRowId={invoiceRowId} invoicesArray={invoiceData.lineItems} onTextboxValueChanged={test}/>
+                    <InvoiceEditModal show={showModal} toggle={toggleModal}  invoiceRowId={invoiceRowId} invoicesArray={invoiceData?.data?.lineItems} onTextboxValueChanged={test}/>
                     </tbody>
                 </table>
-            </>
-
+            </div>
         )
     }
-
 }
 
 export default Table
