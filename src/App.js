@@ -1,10 +1,7 @@
-import React, {Component, useState,useEffect} from 'react'
-import   {GetData} from './apiCalls/getData'
+import React, {useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Table from './components/Table';
 import './App.css';
-import {FileUploader} from "react-drag-drop-files";
-import {Button} from "react-bootstrap";
 
 function App() {
 
